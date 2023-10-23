@@ -5,12 +5,22 @@ bool check(const char *seq, const int length);
 
 void decode(const int *in, const int len, char* const out, const int seed);
 
-void encode(char *string, int* const ptr, const int seed);
 
-int rand(const int ch, const int seed);
+void encode(char *string, int* const ptr, const int a, const int b, const int c);
 
-extern int x;
+int rand(const int ch, const int a, const int b, const int c);
 
-#define TERM 2
+extern int term;
+
+extern int seed;
+
+void sseed(const int a);
+
+struct encoder{
+	int a, b, c, seed;
+	encoder(const int s, const int x, const int y, const int z) : seed(s), a(x), b(y), c(z) {}
+
+	void operator()(char *string, int* ptr) const;
+};
 
 #endif
