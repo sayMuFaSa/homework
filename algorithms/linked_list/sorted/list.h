@@ -17,19 +17,13 @@ struct node {
 struct list {
 	struct node* start;
 	list() : start(new node(0, nullptr)){}
-	list(const struct list& cp);
-	struct list operator = (const struct list& cp);
-	void front_insert(const int val);
-	bool insert_before(const int val, const int tar);
-	bool insert_after(const int val, const int tar);
-	void back_insert(const int val);
+	void insert(const int val);
 	bool erase(const int val);
 	bool traverse();
 	bool erase_front();
 	bool erase_before(int val);
 	bool erase_after(const int val);
 	bool erase_back();
-	void copy(const struct list& copied);
 	struct node *find(const int val);
 	struct node *find_before(const int val);
 	struct node *find_after(const int val);

@@ -2,38 +2,61 @@
 #include <string.h>
 #include <fstream>
 #include <errno.h>
+#include <string>
+#include <unistd.h>
 #include "functions.h"
-
 
 int x = 0;
 
 int main(){
 	int values[100] = {0};
 
-	char string[] = "I don't like these themes.";
+	std::string string;
 
-	const int length = strlen(string);
+	int length = 0;
+
+	int a, b, c;
 
 	char buffer[100] = {0};
-	std::ofstream file;
+	std::ifstream ifile;
+	std::ofstream ofile;
 	int ctr = 0;
 
-	file.open("Results.txt");
+	std::cout << "Enter coefficents\n";
 
-	if (!file.is_open()){
-		std::cerr << "Can't open the file" << std::endl;
+	std::cout << "A: ";
+	std::cin >> a;
 
-		std::cerr << strerror(errno);
+	std::cout << "B: ";
+	std::cin >> b;
+
+	std::cout << "C: ";
+	std::cin >> c;
+
+	decoder dec(a, b, c);
+
+	ifile.open("Encoded_Result.txt");
+	
+	while(true){
+		int a;
+		ifile >> a;
+		std::cout << a;
+		if (ifile.fail()) break;
+		values[length] = a;
+		length++;
 	}
 
-	encode(string, values, 90);
+	ifile.close();
+
+
+	ofile.open("Decoded_Results.txt");
 
 
 	for (int i = 0; i < 100000; i++){
-		decode(values, length, buffer, i);
+		dec(values, length, buffer, i);
 		if (check(buffer, length)){
-			file.write(buffer, length);
-			file << std::endl;
+			ofile.write(buffer, length);
+			ofile << std::endl;
 			ctr++;
 			std::cout << buffer << std::endl;
 		}

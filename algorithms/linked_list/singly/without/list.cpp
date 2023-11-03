@@ -8,7 +8,7 @@ err_code err = no_error;
 
 void list::insert_after(const int val, const int tar){
 	if (start == nullptr){
-		err = EMMPTY;
+		err = EMPTY;
 		return;
 	}
 	
@@ -44,7 +44,7 @@ void list::backinsert(const int val){
 
 struct node* list::find(const int val){
 	if (start == nullptr){
-		err = EMMPTY;
+		err = EMPTY;
 		return nullptr;
 	}
 	struct node *head = start;
@@ -59,7 +59,7 @@ struct node* list::find(const int val){
 struct node* list::find_after(const int val){
 
 	if (start == nullptr){
-		err = EMMPTY;
+		err = EMPTY;
 		return nullptr;
 	}
 
@@ -90,7 +90,7 @@ void list::frontinsert(const int val){
 
 void list::insert_before(const int val, const int tar){
 	if (start == nullptr){
-		err = EMMPTY;
+		err = EMPTY;
 		return;
 	}
 
@@ -109,8 +109,8 @@ void list::insert_before(const int val, const int tar){
 }
 
 struct node* list::find_before(const int val){
-	if (!start){
-		err = EMMPTY;
+	if (start == nullptr){
+		err = EMPTY;
 		return nullptr;
 	}
 
@@ -157,7 +157,7 @@ list::~list(){
 void list::erase(const int val){
 	struct node *head = start;
 	if (head == nullptr) {
-		err = EMMPTY;
+		err = EMPTY;
 		return;
 	}
 
@@ -177,7 +177,7 @@ void list::erase(const int val){
 void list::erase_before(const int val){
 	struct node *head = start;
 	if (head == nullptr){
-		err = EMMPTY;
+		err = EMPTY;
 		return;
 	}
 
@@ -212,7 +212,7 @@ void list::erase_before(const int val){
 
 void list::traverse(){
 	if (start == nullptr){
-		err = EMMPTY;
+		err = EMPTY;
 	}
 
 	struct node *head = start;

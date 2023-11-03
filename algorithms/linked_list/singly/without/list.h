@@ -2,7 +2,7 @@
 #define MYLIST_H
 
 enum err_code{
-no_error, EMMPTY, NOMATCH, OOR, // out of range
+no_error, EMPTY, NOMATCH, OOR, // out of range
 LONE // only one element
 };
 

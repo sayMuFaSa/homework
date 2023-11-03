@@ -6,81 +6,20 @@
 
 err_code err = no_error;
 
-list::list(const struct list& cp) : start(new node(0, nullptr))
-{
-	this->copy(cp);
-}
-
-struct list list::operator = (const struct list& cp){
-	this->copy(cp);
-	return *this;
-}
-
-void list::copy(const struct list& copied){
-
-	if (start->next != nullptr){
-		struct node *head = start->next;
-		while(head != nullptr){
-			struct node *tmp = head;
-			head = head->next;
-			delete tmp;
-		}
-	}
-
-	struct node *head = start; // head here is actually the last added in algorithm
-	
-	struct node *cp = copied.start->next;
-
-	while(cp != nullptr){
-		head->next = new node(cp->val, nullptr);
-		head = head->next;
-		cp = cp->next;
-	}
-	head->next = nullptr;
-}
-
-void list::front_insert(const int val){ // Done
-	start->next = new node(val, start->next);
-}
-
-bool list::insert_before(const int val, const int tar){ // Done
-	struct node *head = start;
-	while(head->next != nullptr){
-		if (head->next->val == val){
-			head->next = new node(tar, head->next);
-			return true;
-		}
-		head = head->next;
-	}
-
-	err = (start->next == nullptr) ? EMMPTY : NOMATCH;
-	return false;
-}
-
-bool list::insert_after(const int val, const int tar){ // Done
-	struct node *head = start->next;
-
-	while(head != nullptr){
-		if (head->val == val){
-			head->next = new node(tar, head->next);
-			return true;
-		}
-		head = head->next;
-	}
-
-	err = (start->next == nullptr) ? EMMPTY : NOMATCH;
-
-	return false;
-}
-
-void list::back_insert(const int val){ // Done
+void list::insert(const int val){ // Done
 	struct node *head = start;
 
-	while(head->next != nullptr){
+	while (head->next != nullptr){
+		if (head->next->val > val){
+			head->next = new node(val, head->next);
+			return;
+		}
 		head = head->next;
 	}
 
-	head->next = new node(val, nullptr);
+	if (start->next == nullptr){
+		start->next = new node(val, nullptr);
+	}else head->next = new node(val, nullptr);
 }
 
 struct node* list::find_before(const int val){ // Done
