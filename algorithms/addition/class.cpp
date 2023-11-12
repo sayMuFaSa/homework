@@ -1,3 +1,6 @@
+#ifndef MY_BIGINT_CPP
+#define MY_BIGINT_CPP
+
 #include "class.h"
 #include <string.h>
 #include <stdint.h>
@@ -33,10 +36,9 @@ bignum::bignum(bignum&& target){
 
 	nums = target.nums;
 
-	target.nums = 0;
+	target.nums = nullptr;
 	target.length = 0;
 
-	std::cout << "Move constructor invoked" << std::endl;
 }
 
 
@@ -105,7 +107,7 @@ bignum bignum::operator=(const char* as_string){
 	}
 
 
-	for(int i = 0; i < length; i++){
+	for(unsigned int i = 0; i < length; i++){
 		nums[length - 1 - i] = as_string[i] - '0';
 	}
 
@@ -151,7 +153,7 @@ bignum bignum::operator=(const std::string& string){
 
 
 
-	for(int i = 0; i < length; i++){
+	for(unsigned int i = 0; i < length; i++){
 		nums[length - 1 - i] = string[i] - '0';
 	}
 
@@ -200,10 +202,4 @@ std::ostream& operator << (std::ostream& stream, bignum&& my_num){
 }
 
 
-
-
-
-
-
-
-
+#endif

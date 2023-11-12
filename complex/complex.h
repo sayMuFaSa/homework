@@ -1,11 +1,10 @@
 #include <iostream>
-
 class trig;
 
 class complex{
 public:
-	double imaginary;
 	double real;
+	double imaginary;
 
 	complex () { } // Default constructor
 
@@ -13,7 +12,7 @@ public:
 
 	complex (double r, double i) : real(r), imaginary (i) {}
 	
-	complex (const trig& n) : real() {}
+	complex (const trig& n) : real() {} // not done yet
 
 	complex& operator = (const complex&);
 		
@@ -36,13 +35,14 @@ public:
 	double angle();
 
 	void roots(const int n);
+	void plot();
 };
 
 class trig {
 public:
-	double teta;
-	
 	double radia;
+	
+	double teta;
 
 	complex* ptr;
 

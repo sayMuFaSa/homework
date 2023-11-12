@@ -1,6 +1,7 @@
 #include "complex.h"
 #include <cmath>
 #include <iomanip>
+#include <string>
 
 complex& complex::operator = (const complex& number){
 	this->real = number.real;
@@ -10,20 +11,14 @@ complex& complex::operator = (const complex& number){
 }
 
 complex complex::operator * (const complex& number) const {
-	// complex product;
-	//
-	// product.real = real * number.real - imaginary * number.imaginary;
-	//
-	// product.imaginary = real * number.imaginary + imaginary * number.real;
-	//
-	// return product;
-	
-	return {
+	complex product;
 
-		real * number.real - imaginary * number.imaginary,
-		
-		real * number.imaginary + imaginary * number.real
-	};
+	product.real = real * number.real - imaginary * number.imaginary;
+
+	product.imaginary = real * number.imaginary + imaginary * number.real;
+
+	return product;
+	
 }
 
 complex complex::operator / (const complex& number) const {
@@ -62,7 +57,7 @@ complex complex::operator + (const complex& number) const {
 }
 
 complex complex::conj () const {
-	return { real, -imaginary };
+	return complex( real, -imaginary );
 }
 
 void complex::roots(const int n){
@@ -84,6 +79,15 @@ void complex::roots(const int n){
 		std::cout << std::endl;
 	}
 
+}
+
+void complex::plot(){
+	FILE *pipe = popen("python plot.py", "w"); // change to python3 if needed
+	
+	fprintf(pipe, "%lf\n", real); // new line will flush the output buffer
+	fprintf(pipe, "%lf\n", imaginary); // here also
+
+	pclose(pipe);
 }
 
 
@@ -118,8 +122,18 @@ trig::operator complex(){
 
 std::ostream& operator << (std::ostream& stream, complex& number){
 	double imaginary = number.imaginary;
+
+	if (number.imaginary == 0.0){
+		std::cout << number.real;
+		return stream;
+	}
+
+	if (number.real == 0.0){
+		std::cout << number.imaginary << 'i';
+		return stream;
+	}
 	
-	char sign = (number.imaginary >= 0.0) ? '+' : (imaginary = -imaginary, '-');
+	char sign = (number.imaginary > 0.0) ? '+' : (imaginary = -imaginary, '-');
 
 
 	stream << number.real << ' ' << sign << ' ' << imaginary << 'i';
@@ -130,22 +144,60 @@ std::ostream& operator << (std::ostream& stream, complex& number){
 
 
 std::istream& operator >> (std::istream& stream, complex& number){
-	std::cout << "Real part: ";
-	stream >> number.real;
-
-	std::cout << "Imaginary part: ";
-	stream >> number.imaginary;
-
-	return stream;
+	// std::cout << "Real part: ";
+	// stream >> number.real;
+	//
+	// std::cout << "Imaginary part: ";
+	// stream >> number.imaginary;
+	//
+	// return stream;
 	
 
 	// Another variant
 	
-	// std::string my_string;
-	// 
-	// std::getline (stream, my_string) ;
-	//
-	// return stream;
+	size_t pos;
+
+	std::string input;
+
+	std::getline (stream, input);
+
+	size_t i_pos = input.find('i');
+
+	if (i_pos != std::string::npos){ // if the number has an imaginary part
+		input[i_pos] = ' ';
+	}else{
+		number.real = std::stod(input);	// if it does not, the whole input is real
+		number.imaginary = 0.0;
+		return stream;
+	}
+
+	number.imaginary = std::stod(input, &pos); // let's assume that we have imaginary part only. (for now)
+
+	for (uint64_t i = 0; i < pos; i++){
+		input[i] = ' ';
+	}
+
+	size_t minus_pos = input.find('-');
+
+	size_t plus_pos = input.find('+');
+
+	if (minus_pos != std::string::npos){
+		number.real = number.imaginary; // assumption was incorrect
+		input[minus_pos] = ' ';
+		number.imaginary = std::stod(input) * -1.0;
+		return stream;
+	}
+
+	if (plus_pos != std::string::npos){
+		number.real = number.imaginary; // assumption was incorrect
+		input[plus_pos] = ' ';
+		number.imaginary = std::stod(input);
+		return stream;
+	}
+
+	number.real = 0.0; // assumption succeded (whole number is imaginary)
+
+	return stream;
 }
 
 
@@ -179,7 +231,8 @@ std::istream& operator >> (std::istream& stream, trig&& number){
 
 
 std::ostream& operator << (std::ostream& stream, trig&& number){
-	std::cout << number.radia << " sin( " << number.teta << " ) + "<<  number.radia << " cos( " << number.teta << " )";
+	std::cout << number.radia << "[ sin( " << number.teta << " ) + "
+		<< "cos( " << number.teta << " ) ]"; // in radians
 
 	return stream;
 }

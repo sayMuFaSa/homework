@@ -1,26 +1,28 @@
+#ifndef MY_BIGINT_H
+#define MY_BIGINT_H
+
 #include <iostream>
 #include <string.h>
+#include <stdint.h>
 
 class bignum {
 public:
-	// static char *internal_buffer;
 	char *nums = nullptr;
-	int length = 0;
-	int max_length = 0;
+	uint32_t length = 0;
+	uint32_t max_length = 0;
 
-	bignum() {}
+	bignum() : nums(nullptr), length(0), max_length(0) {}
 
 	bignum operator+(const bignum&);
 	bignum operator=(const char*);
 	bignum operator=(const bignum&);
 	bignum operator=(const std::string&);
-	bignum (const std::string&);
+	bignum(const std::string&);
 	bignum(const char* as_string);
 	bignum(const bignum&);
 	bignum(bignum&&);
 
 	~bignum(){
-		std::cout << "Destructor" << std::endl;
 		if(nums != nullptr){
 			free(nums);
 		}
@@ -31,8 +33,6 @@ public:
 	void stringify(char* buffer);
 	bool error();
 	
-// private:
-	
 };
 
 extern std::istream& operator >> (std::istream&, bignum&);
@@ -41,6 +41,5 @@ extern std::ostream& operator << (std::ostream&, const bignum&);
 
 extern std::ostream& operator << (std::ostream&, bignum&&);
 
-
-// extern std::istream& operator >>(std::istream&, number&);
+#endif
 

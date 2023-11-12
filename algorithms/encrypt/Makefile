@@ -1,4 +1,4 @@
-all: encode decode overall
+all: encode decode
 
 encode:encode.o functions.o
 	g++ -o $@ $^

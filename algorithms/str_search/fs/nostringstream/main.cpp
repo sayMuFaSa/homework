@@ -7,17 +7,14 @@
 #include <errno.h>
 #include <vector>
 #include <utility>
-#include <limits.h>
 #include <filesystem>
 
 namespace fs = std::filesystem;
 
 
-void usage();
+void usage(const char *prog);
 
 void find_in_dir(const char *path, const char* pattern);
-
-int find_in_cstring(const char *str, const char *substr, int length, int sub_length);
 
 int find_in_file(const std::string& path, const char *pattern);
 
@@ -25,6 +22,7 @@ int find_in_string(const std::string& string, const std::string& pattern);
 
 int main(int argc, char **argv)
 {
+	// Usage: search [filename/dirname] pattern
 	int number;
 	char *path = nullptr;
 	char *pattern = nullptr;
@@ -59,20 +57,20 @@ int main(int argc, char **argv)
 
 Help: // Should not reach
 
-	usage();
+	usage(argv[0]);
 	return 1;
 
 }
 
-void usage()
+void usage(const char *prog)
 {
 
-const char *text = R"(Usage:	search [OPTIONS] PATTERN
+const char *text = R"(Usage:	%s [OPTIONS] PATTERN
 -f, --file 		search in a regular file(default)
 -d, --directory		search recursively in a directory
 )";
 
-	std::cerr << text << std::endl;
+	fprintf(stderr, text, prog);
 }
 
 void find_in_dir(const char *path, const char *pattern)
@@ -96,31 +94,31 @@ void find_in_dir(const char *path, const char *pattern)
 
 int find_in_file(const std::string& path, const char *pattern)
 {
-	static std::stringstream stream;
-
 	std::ifstream file;
+
+	std::string line;
+	int ctr = 0;
 
 	file.open(path);
 
 	if (file.fail()){
-		std::cout << strerror(errno);
+		std::cerr << "Problem with file: " << path << strerror(errno);
 		exit(1);
 		return -1;
 	}
 
-	stream << file.rdbuf();
+	while(true){
+		std::getline(file, line);
+		if (file.eof()) break;
 
-	std::string contents = stream.str();
+		ctr += find_in_string(line, pattern);
+	}
+
+	
 
 	file.close();
 
-	stream.clear();
-
-	stream.str("");
-
-	return find_in_string(contents, pattern);
-
-	// return find_in_cstring(&contents[0], pattern, contents.length(), strlen(pattern));
+	return ctr;
 
 }
 
@@ -129,16 +127,12 @@ int find_in_file(const std::string& path, const char *pattern)
 
 int find_in_string(const std::string& string, const std::string& pattern)
 {
-	const char *substr = &pattern[0];
-	const char *str = &string[0];
 	const int sub_length = pattern.length();
 	const int it = string.length() - pattern.length() + 1;
-
 	int ctr = 0;
-	int flag = 0;
 
 	for (int i = 0; i < it; i++){
-		flag = 1;
+		int flag = 1;
 
 		for (int j = 0; j < sub_length; j++){
 
@@ -149,36 +143,7 @@ int find_in_string(const std::string& string, const std::string& pattern)
 		}
 		if (flag) ctr++;
 	}
-		
+
 	return ctr;
 }
-
-
-
-
-// int find_in_cstring(const char *str, const char *substr,  int str_length, int sub_length)
-// {
-// 	const int it = str_length - sub_length + 1;
-//
-// 	int ctr = 0;
-// 	int flag = 0;
-//
-// 	if (it < 0) return 0;
-//
-// 	for (int i = 0; i < it; i++){
-// 		flag = 1;
-//
-// 		for (int j = 0; j < sub_length; j++){
-//
-// 			if (str[i + j] != substr[j]){
-// 				flag = 0;
-// 				break;
-// 			}
-// 		}
-// 		if (flag) ctr++;
-// 	}
-// 		
-//
-// 	return ctr;
-// }
 

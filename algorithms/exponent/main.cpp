@@ -12,10 +12,6 @@ double exp(const double a, int n){
 	return result;
 }
 
-struct stack{
-	int a;
-};
-
 
 int main(void){
 	double result, power;
