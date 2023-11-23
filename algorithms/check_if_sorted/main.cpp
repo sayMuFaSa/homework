@@ -1,17 +1,15 @@
 #include <iostream>
 
-
-int check(int*,unsigned int);
-
 typedef enum{
 	unsorted, ascending, descending
-}state;
+}state_t;
 
+state_t check(int*,unsigned int);
 
 int main(void){
 	int my_arr[] = {1, 2, 3, 4};
 
-	int result = check(my_arr, 4);
+	state_t result = check(my_arr, 4);
 
 	switch(result){
 		case ascending:
@@ -29,11 +27,11 @@ int main(void){
 }
 
 
-int check(int* arr, unsigned int number){
-	state flag = ascending;
+state_t check(int* arr, unsigned int number){
+	state_t flag = ascending;
 
 	// Check if in ascending order, if true don't change the flag
-	for(int i = 0; i < number - 1; i++){
+	for(unsigned int i = 0; i < number - 1; i++){
 		if(arr[i] > arr[i + 1]){
 			flag = descending;
 			break;
@@ -44,7 +42,7 @@ int check(int* arr, unsigned int number){
 	
 
 	// Check if in descending order, if true don't change the flag
-	for(int i = 0; i < number - 1; i++){
+	for(unsigned int i = 0; i < number - 1; i++){
 
 		if(arr[i] < arr[i + 1]){
 			return unsorted;

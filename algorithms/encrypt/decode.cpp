@@ -3,7 +3,6 @@
 #include <fstream>
 #include <errno.h>
 #include <string>
-#include <unistd.h>
 #include "functions.h"
 
 int x = 0;

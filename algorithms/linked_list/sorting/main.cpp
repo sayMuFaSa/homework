@@ -18,7 +18,7 @@ int main(void){
 
 	my_list.traverse();
 
-	ssort(list(my_list), empty);
+	ssort(my_list, empty);
 
 	empty.traverse();
 }

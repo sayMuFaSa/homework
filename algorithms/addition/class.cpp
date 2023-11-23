@@ -1,10 +1,10 @@
+// rewrite with std::vector
 #ifndef MY_BIGINT_CPP
 #define MY_BIGINT_CPP
 
 #include "class.h"
 #include <string.h>
 #include <stdint.h>
-#include <unistd.h>
 
 
 bignum::bignum(const bignum& target){
@@ -26,10 +26,6 @@ bignum::bignum(const bignum& target){
 }
 
 bignum::bignum(bignum&& target){
-	length = 0;
-	nums = nullptr;
-	max_length = 0;
-
 	if(this == &target) return;
 	
 	length = target.length;
@@ -38,11 +34,15 @@ bignum::bignum(bignum&& target){
 
 	target.nums = nullptr;
 	target.length = 0;
-
+	target.max_length = 0;
+	
 }
 
 
 bignum bignum::operator+(const bignum& my_num){
+	if (this->length == 0 || my_num.length == 0) 
+		throw std::runtime_error("Adding uninitialized or moved bignum objects");
+
 	bignum sum;
 	uint8_t carry = 0;
 	const bignum& bigger = (my_num.length > length) ? my_num : *this;
@@ -88,12 +88,26 @@ bignum bignum::operator+(const bignum& my_num){
 	return sum;
 }
 
+bignum& bignum::operator=(bignum&& target){
+	if (this == &target){
+		return *this;
+	}
+
+	length = target.length;
+
+	nums = target.nums;
+
+	target.nums = nullptr;
+	target.length = 0;
+	target.max_length = 0;
+
+	return *this;
+}
 
 
 
 
-
-bignum bignum::operator=(const char* as_string){
+bignum& bignum::operator=(const char* as_string){
 	length = strlen(as_string);
 
 	if(nums == nullptr) {
@@ -121,7 +135,7 @@ bignum::bignum(const char* as_string){
 
 
 
-bignum bignum::operator=(const bignum& target){
+bignum& bignum::operator=(const bignum& target){
 	if(this == &target){
 		return *this;
 	}
@@ -140,7 +154,7 @@ bignum bignum::operator=(const bignum& target){
 
 
 
-bignum bignum::operator=(const std::string& string){
+bignum& bignum::operator=(const std::string& string){
 	if (nums == nullptr) nums = (char*) calloc(string.length(), 1);
 	
 	else if(string.length() >= length){

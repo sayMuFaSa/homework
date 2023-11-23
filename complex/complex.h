@@ -35,7 +35,7 @@ public:
 	double angle();
 
 	void roots(const int n);
-	void plot();
+	void plot() const;
 };
 
 class trig {
@@ -61,7 +61,7 @@ public:
 
 
 
-extern std::ostream& operator << (std::ostream&, complex&);
+extern std::ostream& operator << (std::ostream&, const complex&);
 
 extern std::istream& operator >> (std::istream&, complex&);
 
@@ -70,7 +70,7 @@ extern std::ostream& operator << (std::ostream&, trig&&);
 
 extern std::istream& operator >> (std::istream&, trig&&);
 
-
+extern std::ostream& operator << (std::ostream&, complex&&);
 
 
 

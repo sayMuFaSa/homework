@@ -1,6 +1,7 @@
 #ifndef MYLIST_H
 #define MYLIST_H
 
+
 struct node {
 	int val;
 	struct node *next;

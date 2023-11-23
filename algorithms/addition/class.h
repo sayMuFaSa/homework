@@ -1,3 +1,4 @@
+// rewrite with std::vector
 #ifndef MY_BIGINT_H
 #define MY_BIGINT_H
 
@@ -14,11 +15,12 @@ public:
 	bignum() : nums(nullptr), length(0), max_length(0) {}
 
 	bignum operator+(const bignum&);
-	bignum operator=(const char*);
-	bignum operator=(const bignum&);
-	bignum operator=(const std::string&);
+	bignum& operator=(const char*);
+	bignum& operator=(const bignum&);
+	bignum& operator=(bignum&&);
+	bignum& operator=(const std::string&);
 	bignum(const std::string&);
-	bignum(const char* as_string);
+	bignum (const char* as_string);
 	bignum(const bignum&);
 	bignum(bignum&&);
 
@@ -28,11 +30,6 @@ public:
 		}
 	}
 
-
-	void input(std::string& buffer);
-	void stringify(char* buffer);
-	bool error();
-	
 };
 
 extern std::istream& operator >> (std::istream&, bignum&);

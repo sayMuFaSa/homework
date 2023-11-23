@@ -69,8 +69,7 @@ void complex::roots(const int n){
 
 	for (int k = 0; k < n; k++){
 		number.teta = (teta + 2 * M_PI * static_cast<double>(k)) / static_cast<double>(n);
-		complex answer = static_cast<complex> (number);
-		std::cout << answer;
+		std::cout << static_cast<complex>(number);
 		
 		if ( k < n - 1){
 			std::cout << ",";
@@ -81,7 +80,7 @@ void complex::roots(const int n){
 
 }
 
-void complex::plot(){
+void complex::plot() const{
 	FILE *pipe = popen("python plot.py", "w"); // change to python3 if needed
 	
 	fprintf(pipe, "%lf\n", real); // new line will flush the output buffer
@@ -120,7 +119,7 @@ trig::operator complex(){
 	return number;
 }
 
-std::ostream& operator << (std::ostream& stream, complex& number){
+std::ostream& operator << (std::ostream& stream, const complex& number){
 	double imaginary = number.imaginary;
 
 	if (number.imaginary == 0.0){
@@ -140,6 +139,29 @@ std::ostream& operator << (std::ostream& stream, complex& number){
 
 	return stream;
 }
+
+std::ostream& operator << (std::ostream& stream, complex&& number){
+	double imaginary = number.imaginary;
+
+	if (number.imaginary == 0.0){
+		std::cout << number.real;
+		return stream;
+	}
+
+	if (number.real == 0.0){
+		std::cout << number.imaginary << 'i';
+		return stream;
+	}
+	
+	char sign = (number.imaginary > 0.0) ? '+' : (imaginary = -imaginary, '-');
+
+
+	stream << number.real << ' ' << sign << ' ' << imaginary << 'i';
+
+	return stream;
+}
+
+
 
 
 
@@ -199,6 +221,7 @@ std::istream& operator >> (std::istream& stream, complex& number){
 
 	return stream;
 }
+
 
 
 
