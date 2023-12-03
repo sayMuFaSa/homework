@@ -37,7 +37,7 @@ void stack::push(const int n){
 	if (size > limit * 3 / 4) { // if more than 75%
 		int *tmp = new int[limit * 2];
 		memcpy(tmp, arr, size * sizeof(int));	// if elements are objects, more complex copying logic might be needed.
-		delete arr;
+		delete[] arr;
 		arr = tmp;
 		limit *= 2;
 	}
@@ -51,7 +51,7 @@ int stack::pop(){
 	if (limit > size / 4 && limit > 1) {	// if less than 25%
 		int *tmp = new int[limit / 2];
 		memcpy(tmp, arr, size * sizeof(int));
-		delete arr;
+		delete[] arr;
 		arr = tmp;
 		limit /= 2;
 	}

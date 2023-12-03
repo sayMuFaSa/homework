@@ -10,6 +10,11 @@ complex& complex::operator = (const complex& number){
 	return *this;
 }
 
+complex::complex(const trig& n){
+	real = n.radia * cos(n.teta);
+	imaginary = n.teta * sin(n.teta);
+}
+
 complex complex::operator * (const complex& number) const {
 	complex product;
 

@@ -12,7 +12,7 @@ public:
 
 	complex (double r, double i) : real(r), imaginary (i) {}
 	
-	complex (const trig& n) : real() {} // not done yet
+	complex (const trig& n); // not done yet
 
 	complex& operator = (const complex&);
 		

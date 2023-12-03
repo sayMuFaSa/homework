@@ -1,255 +1,153 @@
-#ifndef MYLIST_CPP
-#define MYLIST_CPP
+#ifndef	MY_LIST_CPP
+#define	MY_LIST_CPP
 
 #include "list.h"
 #include <iostream>
-#include <stdexcept>
 
+namespace singly{
 
-list::list(const struct list& cp) : start(new node(0, nullptr))
-{
-	this->copy(cp);
+list::list(const std::initializer_list<int>& init) {
+	start = new node(0, nullptr);
+
+	struct node *head = start;
+
+	for (int a : init){
+		head->next = new node(a, nullptr);
+		head = head->next;
+	}
 }
 
-struct list list::operator = (const struct list& cp){
-	this->copy(cp);
+list::list(const list& src){
+	if (this == &src) return;
+
+	start = new node(0, nullptr);
+
+	struct node *head = src.start->next;
+	struct node *dst = start;
+
+	while(head != nullptr){
+		dst->next = new node(head->val, nullptr);
+		dst = dst->next;
+		head = head->next;
+	}
+}
+
+list& list::operator= (const list& src){
+	if (this == &src) return *this;
+	this->clear();
+
+	struct node* head = src.start->next;
+	struct node* dst = start;
+
+	while (head != nullptr){
+		dst->next = new node(head->val, nullptr);
+		head = head->next;
+		dst = dst->next;
+	}
+
 	return *this;
 }
 
-void list::copy(const struct list& copied){
-
-	if (start->next != nullptr){
-		struct node *head = start->next;
-		while(head != nullptr){
-			struct node *tmp = head;
-			head = head->next;
-			delete tmp;
-		}
-	}
-
-	struct node *head = start; // head here is actually the last added in algorithm
-	
-	struct node *cp = copied.start->next;
-
-	while(cp != nullptr){
-		head->next = new node(cp->val, nullptr);
-		head = head->next;
-		cp = cp->next;
-	}
-	head->next = nullptr;
-}
-
-void list::front_insert(const int val){ // Done
+void list::front_insert(const int val){
 	start->next = new node(val, start->next);
 }
 
-void list::insert_before(const int val, const int tar){ // Done
-	struct node *head = start;
-	while(head->next != nullptr){
-		if (head->next->val == val){
-			head->next = new node(tar, head->next);
-			return;
-		}
-		head = head->next;
-	}
-
-	(start->next == nullptr) 
-		? throw std::runtime_error("Empty")
-		: throw std::runtime_error("No such item");
-
+void list::insert_after(struct node* after_me, const int val){
+	after_me->next = new node(val, after_me->next);
 }
 
-void list::insert_after(const int val, const int tar){ // Done
-	struct node *head = start->next;
-
-	while(head != nullptr){
-		if (head->val == val){
-			head->next = new node(tar, head->next);
-			return;
-		}
-		head = head->next;
-	}
-
-	(start->next == nullptr) 
-		? throw std::runtime_error("Empty")
-		: throw std::runtime_error("No such item");
-
+void list::insert_after(const int after_me, const int val){
+	this->insert_after(this->find(after_me), val);
 }
 
-void list::back_insert(const int val){ // Done
-	struct node *head = start;
+struct node* list::find_before(const int tar){
+	struct node* head = start->next;
+	if (head == nullptr) throw std::runtime_error("Searching in empty list");
 
-	while(head->next != nullptr){
-		head = head->next;
-	}
-
-	head->next = new node(val, nullptr);
-}
-
-struct node* list::find_before(const int val){ // Done
-
-	if (start->next == nullptr){
-		throw std::runtime_error("Empty");
-	}
-
-	struct node *head = start->next;
-
-	if (head->val == val){
-		throw std::runtime_error("Accessing sentinel's not allowed");
-	}
-
-	while (head->next != nullptr){
-		if (head->next->val == val){
-			return head;
-		}
-		head = head->next;
-	}
-	
-
-
-	return nullptr; // No such item in the list
-}
-
-struct node* list::find(const int val){ // Done
-	struct node *head = start->next;
-
-	if (head == nullptr) throw std::runtime_error("Empty");
-
-	while (head != nullptr && head->val != val){
+	while(head->next != nullptr && head->next->val != tar){
 		head = head->next;
 	}
 
 	return head;
 }
 
-struct node* list::find_after(const int val){ // Done
-	struct node *head = start;
-
-	while (head->next != nullptr){
-		if (head->val == val && head != start) return head->next;
+struct node* list::find(const int tar){
+	struct node* head = start->next;
+	if (head == nullptr) throw std::runtime_error("Searching in empty list");
+	
+	while(head != nullptr && head->val != tar){
 		head = head->next;
 	}
 
-	return (head == start) 
-		? throw std::runtime_error("Empty")
-		: nullptr;
+	return head; // returns nullptr if not found
 }
 
-void list::erase_front(){
-	if (start == nullptr){
-		throw std::runtime_error("Empty");
-	}
+void list::erase_after(struct node* after_me){
+	if (after_me == start) throw std::runtime_error("Erasing sentinel is not allowed");
 
-	struct node *tmp = start->next;
+	if (start->next == nullptr) throw std::runtime_error("EMPTY LIST NOTHING TO ERASE");
 
-	start->next = start->next->next;
+	struct node *tmp = after_me->next;
+
+	after_me->next = tmp->next;
 
 	delete tmp;
-
 }
 
-void list::erase_before(const int val){ // Done
-	if (start->next == nullptr){
-		throw std::runtime_error("Empty");
-	}
-	
-	struct node *head = start;
+int list::remove(const int val){
+	if (start->next == nullptr) throw std::runtime_error("Empty list: nothing to remove.");
+	int ctr;
 
-	while (head->next->next != nullptr){
-		if (head->next->next->val == val){
-			struct node *tmp = head->next;
-			head->next = head->next->next;
-			delete tmp;
-		}
-		head = head->next;
-	}
-
-	(head == start) 
-		? throw std::runtime_error("Nothing before the item exists")
-		: throw std::runtime_error("No such item");
-}
-
-void list::erase(const int val){ // Done
-	struct node *head = start;
+	struct node* head = start;
 
 	while (head->next != nullptr) {
 		if (head->next->val == val){
 			struct node *tmp = head->next;
-			head->next = head->next->next;
+			head->next = tmp->next;
 			delete tmp;
+			ctr++;
 		}
+	}
+	return ctr;
+}
+
+void list::traverse(){
+	struct node *head = start->next;
+
+	if (head == nullptr){
+		std::cout << "Empty list" << std::endl; return;
+	}else{
+		std::cout << head->val;
 		head = head->next;
 	}
 
-	(start->next == nullptr) 
-		? throw std::runtime_error("Empty")
-		: throw std::runtime_error("No such element");
-
-}
-
-void list::erase_after(const int val){
-	struct node *head = start;
-
-	while (head->next != nullptr){
-		if (head->val == val && head != start){
-			struct node *tmp = head->next;
-			head->next = head->next->next;
-			delete tmp;
-		}
+	while(head != nullptr){
+		std::cout << " -> " << head->val;
 		head = head->next;
 	}
-
-	(start->next == nullptr) 
-		? throw std::runtime_error("Empty")
-		: throw std::runtime_error("No such element");
+	std::cout << std::endl;
 }
 
-void list::erase_back(){ // Done
-	if (start->next == nullptr){
-		std::runtime_error("Empty");
-	}
+void list::clear(){
+	struct node *head = start->next;
 
-	struct node *head = start;
+	if (head == nullptr) return;
 
-	while (head->next->next != nullptr){
-		head = head->next;
-	}
-
-	struct node *tmp = head->next;
-
-	head->next = nullptr;
-
-	delete tmp;
-
-}
-
-list::~list(){ // Done
-	 struct node *head = start;
-
-	while(head->next != nullptr){
+	while(head != nullptr){
 		struct node *tmp = head;
 		head = head->next;
 		delete tmp;
 	}
 
-	delete head;
+	start->next = nullptr;
 }
 
+list::~list(){
+	this->clear();
+	delete start;
+	start = nullptr;
+}
 
-void list::traverse(){ // Done
-	struct node *head = start;
-
-	if (head->next == nullptr) {
-		throw std::runtime_error("Empty");
-	}else head = head->next;
-
-	std::cout << head->val;
-
-	while (head->next != nullptr){
-		head = head->next;
-		std::cout << " --> " << head->val;
-	}
-	std::cout << std::endl;
 };
 
 #endif

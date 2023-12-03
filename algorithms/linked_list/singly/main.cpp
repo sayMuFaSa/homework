@@ -1,18 +1,25 @@
 #include <iostream>
 #include "list.h"
+#include <stdlib.h>
 
+namespace s = singly;
 
 int main(void){
-	list my_list, empty;
+	s::list my_list {1, 2, 3};
 
-	empty.back_insert(90);
+	s::list::iterator it = my_list.end();
 
-	for (int i = 10; i < 40; i += 10)
-	my_list.back_insert(i);
+	// Let's iterate over each element
 
-	empty = my_list;
+	std::cout << "Each element multiplied by 2: ";
 
-	empty.traverse();
+	for (const int a : my_list){
+		std::cout << a * 2 << ' ';
+	}
+	std::cout << '\n';
 
-	// empty.traverse();
+	s::list jack {my_list};
+
+	jack.traverse();
+	
 }
