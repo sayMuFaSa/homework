@@ -73,7 +73,6 @@ bignum bignum::operator+(const bignum& my_num){
 
 
 	if(carry == 1){
-		
 		sum.nums = (char*) realloc(sum.nums, max_length * 2);
 		sum.nums[more] = 1;
 
